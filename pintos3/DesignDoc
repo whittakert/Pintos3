@@ -21,6 +21,40 @@ Ethan Koch
 >> preparing your submission, other than the Pintos documentation, course
 >> text, lecture notes, and course staff.
 
+	*** We used the pintos3 code provided for us ***
+	--> We will document here and in our code where we implement our own code
+	and what is provided for us. 
+
+>>>>>>> ADDED BY TAYLOR AS A REFERENCE :) -- although it's not really helping me out much....... 
+
+	4.2 Suggested Order of Implementation
+	We suggest the following initial order of implementation:
+	1. Frame table (see section 4.1.5 Managing the Frame Table). 
+	Change process.c to use your frame table allocator.
+	Do not implement swapping yet. If you run out of frames, fail the allocator or panic the kernel.
+	After this step, your kernel should still pass all the project 2 test cases.
+
+	--> I think that our process.c already implments this for us. 
+
+
+	2. Supplemental page table and page fault handler (see section 4.1.4 Managing the Supplemental
+	Page Table). Change process.c to record the necessary information in the supplemental page
+	table when loading an executable and setting up its stack. Implement loading of code and data
+	segments in the page fault handler. For now, consider only valid accesses.
+	After this step, your kernel should pass all of the project 2 functionality test cases, but only some
+	of the robustness tests.
+
+
+	3. From here, you can implement stack growth, mapped files, and page reclamation on process
+	exit in parallel.
+
+
+	The next step is to implement eviction (see section 4.1.5 Managing the Frame Table). Initially you could
+	choose the page to evict randomly. At this point, you need to consider how to manage accessed and dirty
+	bits and aliasing of user and kernel pages. Synchronization is also a concern: how do you deal with it if
+	process A faults on a page whose frame process B is in the process of evicting? Finally, implement a
+	eviction strategy such as the clock algorithm. 
+
 			PAGE TABLE MANAGEMENT
 			=====================
 
@@ -30,24 +64,83 @@ Ethan Koch
 >> `struct' member, global or static variable, `typedef', or
 >> enumeration.  Identify the purpose of each in 25 words or less.
 
+	--> With the pintos3 starter code, that we were instructed
+	to start with, we were provided with the follow structs...
+
+	1. In page.h
+	/* Virtual page. */
+	struct page 
+	  {
+	    /* Immutable members. */
+	    void *addr;                 /* User virtual address. */
+	    bool read_only;             /* Read-only page? */
+	    struct thread *thread;      /* Owning thread. */
+
+	    /* Accessed only in owning process context. */
+	    struct hash_elem hash_elem; /* struct thread `pages' hash element. */
+
+	    /* Set only in owning process context with frame->frame_lock held.
+	       Cleared only with scan_lock and frame->frame_lock held. */
+	    struct frame *frame;        /* Page frame. */
+
+	    /* Swap information, protected by frame->frame_lock. */
+	    block_sector_t sector;       /* Starting sector of swap area, or -1. */
+	    
+	    /* Memory-mapped file information, protected by frame->frame_lock. */
+	    bool private;               /* False to write back to file,
+		                           true to write back to swap. */
+	    struct file *file;          /* File. */
+	    off_t file_offset;          /* Offset in file. */
+	    off_t file_bytes;           /* Bytes to read/write, 1...PGSIZE. */
+	  };
+
+	2. In frame.h
+	/* A physical frame. */
+	struct frame 
+	  {
+	    struct lock lock;           /* Prevent simultaneous access. */
+	    void *base;                 /* Kernel virtual base address. */
+	    struct page *page;          /* Mapped process page, if any. */
+	  };
+
+
+
 ---- ALGORITHMS ----
 
 >> A2: In a few paragraphs, describe your code for locating the frame,
 >> if any, that contains the data of a given page.
 
+
+
 >> A3: How does your code coordinate accessed and dirty bits between
 >> kernel and user virtual addresses that alias a single frame, or
 >> alternatively how do you avoid the issue?
+
+	--> I am almost positive that we don't use any kernel virtual addresses? 
+		but I am not sure... 
+	Where we do use the dirty bool	
+	--> page.c
+		--> bool page_out (struct page *p) method
 
 ---- SYNCHRONIZATION ----
 
 >> A4: When two user processes both need a new frame at the same time,
 >> how are races avoided?
 
+	--> You can see in process.c, setup_stack() uses a lock to make sure
+	that when allocating allocating a frame for a new page.
+	frame_alloc_and_lock (page) --> try_frame_alloc_and_lock (page) -->
+	where we actually aquire the lock. This was implemented in the pintos3
+	starter code. 
+
+
 ---- RATIONALE ----
 
 >> A5: Why did you choose the data structure(s) that you did for
 >> representing virtual-to-physical mappings?
+
+
+
 
 		       PAGING TO AND FROM DISK
 		       =======================
@@ -57,6 +150,9 @@ Ethan Koch
 >> B1: Copy here the declaration of each new or changed `struct' or
 >> `struct' member, global or static variable, `typedef', or
 >> enumeration.  Identify the purpose of each in 25 words or less.
+
+	--> See A1. Again, these were provided for us in 
+		the pintos3 starter code.
 
 ---- ALGORITHMS ----
 
@@ -111,6 +207,20 @@ Ethan Koch
 >> C1: Copy here the declaration of each new or changed `struct' or
 >> `struct' member, global or static variable, `typedef', or
 >> enumeration.  Identify the purpose of each in 25 words or less.
+
+	--> With the pintos3 starter code, that we were instructed
+	to start with, we were provided with the follow struct...
+
+	1. In syscall.c
+	/* Binds a mapping id to a region of memory and a file. */
+	struct mapping
+	  {
+	    struct list_elem elem;      /* List element. */
+	    int handle;                 /* Mapping id. */
+	    struct file *file;          /* File. */
+	    uint8_t *base;              /* Start of memory mapping. */
+	    size_t page_cnt;            /* Number of pages mapped. */
+	  };
 
 ---- ALGORITHMS ----
 

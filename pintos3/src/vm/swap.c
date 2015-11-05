@@ -74,8 +74,17 @@ swap_out (struct page *p)
   p->sector = slot * PAGE_SECTORS;
 
   // Write out page sectors
-/* add code here */ 
- 
+/* add code here */
+	/************************************************************
+	THIS IS ALL PSUEDO CODE AND I AM NOT 100% SURE ABOUT ANYTHING
+	*************************************************************/ 
+  int count = 0;
+  while (count < PAGE_SECTORS)
+     {
+	block_write (struct block *block, block_sector_t sector, const void *buffer)
+	count = count + 1;
+     }
+ //ends here TW 
   p->private = false;
   p->file = NULL;
   p->file_offset = 0;

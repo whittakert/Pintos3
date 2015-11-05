@@ -52,9 +52,17 @@ page_for_addr (const void *address)
 
       /* No page.  Expand stack? */
 
-/* add code */
+	/************************************************************
+	THIS IS ALL PSUEDO CODE AND I AM NOT 100% SURE ABOUT ANYTHING
+	*************************************************************/
 
-    }
+/* add code */
+      struct cur = thread_current;
+      if (address  >= base - stack_max && address >= cur->pages - 32)
+      {
+	 return page_allocate (void *vaddr, bool read_only);
+      }
+    // ends here TW
   return NULL;
 }
 
@@ -145,12 +153,35 @@ page_out (struct page *p)
      dirty bit, to prevent a race with the process dirtying the
      page. */
 
-/* add code here */
+	/************************************************************
+	THIS IS ALL PSUEDO CODE AND I AM NOT 100% SURE ABOUT ANYTHING
+	*************************************************************/
 
+/* add code here */
+	pagedir_clear_page (uint32_t *pd, void *page);
   /* Has the frame been modified? */
-
+	pagedir_is_dirty (uint32_t *pd, const void *vpage) 
 /* add code here */
-
+	if (file != NULL)
+	{	
+	   if (dirty == true)
+	      {
+	          if (!read_only || private)
+		     {
+			swap_out(p);
+		     }		
+ 		  else
+			file_write_at (struct file *file, const void *buffer, off_t size,
+               			off_t file_ofs);	
+	       }//end dirty check
+	   else
+		ok = true???
+	}
+	else
+	{
+	   swap_out(p);	
+	}
+	}// end file if statement -- ends here TW
   /* Write frame contents to disk if necessary. */
 
 /* add code here */
