@@ -24,37 +24,7 @@ Ethan Koch
 	*** We used the pintos3 code provided for us ***
 	--> We will document here and in our code where we implement our own code
 	and what is provided for us. 
-
->>>>>>> ADDED BY TAYLOR AS A REFERENCE :) -- although it's not really helping me out much....... 
-
-	4.2 Suggested Order of Implementation
-	We suggest the following initial order of implementation:
-	1. Frame table (see section 4.1.5 Managing the Frame Table). 
-	Change process.c to use your frame table allocator.
-	Do not implement swapping yet. If you run out of frames, fail the allocator or panic the kernel.
-	After this step, your kernel should still pass all the project 2 test cases.
-
-	--> I think that our process.c already implments this for us. 
-
-
-	2. Supplemental page table and page fault handler (see section 4.1.4 Managing the Supplemental
-	Page Table). Change process.c to record the necessary information in the supplemental page
-	table when loading an executable and setting up its stack. Implement loading of code and data
-	segments in the page fault handler. For now, consider only valid accesses.
-	After this step, your kernel should pass all of the project 2 functionality test cases, but only some
-	of the robustness tests.
-
-
-	3. From here, you can implement stack growth, mapped files, and page reclamation on process
-	exit in parallel.
-
-
-	The next step is to implement eviction (see section 4.1.5 Managing the Frame Table). Initially you could
-	choose the page to evict randomly. At this point, you need to consider how to manage accessed and dirty
-	bits and aliasing of user and kernel pages. Synchronization is also a concern: how do you deal with it if
-	process A faults on a page whose frame process B is in the process of evicting? Finally, implement a
-	eviction strategy such as the clock algorithm. 
-
+	
 			PAGE TABLE MANAGEMENT
 			=====================
 
