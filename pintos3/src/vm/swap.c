@@ -78,12 +78,14 @@ swap_out (struct page *p)
 	/************************************************************
 	THIS IS ALL PSUEDO CODE AND I AM NOT 100% SURE ABOUT ANYTHING
 	*************************************************************/ 
-  int count = 0;
+/* 
+ int count = 0;
   while (count < PAGE_SECTORS)
      {
 	block_write (struct block *block, block_sector_t sector, const void *buffer)
 	count = count + 1;
      }
+*/
  //ends here TW 
   p->private = false;
   p->file = NULL;
