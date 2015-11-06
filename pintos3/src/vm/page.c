@@ -53,13 +53,13 @@ page_for_addr (const void *address)
       /* No page.  Expand stack? */
 
 	/************************************************************
-	THIS IS ALL PSUEDO CODE AND I AM NOT 100% SURE ABOUT ANYTHING
+			   THIS IS ALL PSUEDO CODE 
 	*************************************************************/
 
 /* add code */
 /*
       struct cur = thread_current;
-      if (address  >= base - stack_max && address >= cur->pages - 32)
+      if (address >= cur->pages - 32 && address  >= base - stack_max)
       {
 	 return page_allocate (void *vaddr, bool read_only);
       

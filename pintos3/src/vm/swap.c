@@ -82,7 +82,7 @@ swap_out (struct page *p)
  int count = 0;
   while (count < PAGE_SECTORS)
      {
-	block_write (struct block *block, block_sector_t sector, const void *buffer)
+	block_write (struct block *block, block_sector_t sector, const void *buffer) -->need to add parameters
 	count = count + 1;
      }
 */
