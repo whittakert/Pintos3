@@ -160,9 +160,9 @@ page_out (struct page *p)
 	*************************************************************/
 
 /* add code here */
-	pagedir_clear_page (uint32_t *pd, void *page);
+	//pagedir_clear_page (uint32_t *pd, void *page);
   /* Has the frame been modified? */
-	pagedir_is_dirty (uint32_t *pd, const void *vpage) 
+	//pagedir_is_dirty (uint32_t *pd, const void *vpage) 
 /* add code here */
 /*
 	if (file != NULL)
