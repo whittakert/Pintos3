@@ -62,9 +62,10 @@ page_for_addr (const void *address)
       if (address  >= base - stack_max && address >= cur->pages - 32)
       {
 	 return page_allocate (void *vaddr, bool read_only);
-      }
+      
     */ 
 	//ends here TW
+     }
   return NULL;
 }
 
