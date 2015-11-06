@@ -57,12 +57,14 @@ page_for_addr (const void *address)
 	*************************************************************/
 
 /* add code */
+/*
       struct cur = thread_current;
       if (address  >= base - stack_max && address >= cur->pages - 32)
       {
 	 return page_allocate (void *vaddr, bool read_only);
       }
-    // ends here TW
+    */ 
+	//ends here TW
   return NULL;
 }
 
@@ -162,6 +164,7 @@ page_out (struct page *p)
   /* Has the frame been modified? */
 	pagedir_is_dirty (uint32_t *pd, const void *vpage) 
 /* add code here */
+/*
 	if (file != NULL)
 	{	
 	   if (dirty == true)
@@ -182,6 +185,7 @@ page_out (struct page *p)
 	   swap_out(p);	
 	}
 	}// end file if statement -- ends here TW
+*/
   /* Write frame contents to disk if necessary. */
 
 /* add code here */
