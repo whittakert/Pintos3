@@ -65,7 +65,7 @@ page_for_addr (const void *address)
       
     */ 
 	//ends here TW
-//      return page_allocate(address, false);
+      return page_allocate(address, false);
 
      }
   return NULL;
