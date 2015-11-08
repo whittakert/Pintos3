@@ -505,26 +505,25 @@ static void
 unmap (struct mapping *m) 
 {
 	/* add code here */
-	uint8_t* addr = m->base;
+	off_t offset = 0;
 
   lock_acquire( &fs_lock );
-	file_seek( m->file, (off_t)0 );
-	file_write( m->file, addr, m->page_cnt * PGSIZE );
-	list_remove( &m->elem );
-  lock_release( &fs_lock );
 
 	while( m->page_cnt > 0 )
-		{	
-		page_deallocate( addr );
-		addr += PGSIZE;
+		{
+		if( pagedir_is_dirty( thread_current()->pagedir, m->base + offset ) )
+			file_write_at( m->file, m->base + offset, PGSIZE, offset );
+		page_deallocate( m->base + offset );
+		offset += PGSIZE;
 		m->page_cnt--;
 		}
 
-  //lock_acquire( &fs_lock );
-  //file_close( m->file );
-  //lock_release( &fs_lock );
+	list_remove( &m->elem );
+  file_close( m->file );
 
-	//free(m);
+  lock_release( &fs_lock );
+
+	free(m);
 }
  
 /* Mmap system call. */
@@ -581,7 +580,10 @@ static int
 sys_munmap (int mapping) 
 {
 	/* add code here */
-	unmap(lookup_mapping(mapping));
+	struct mapping *m = lookup_mapping(mapping);
+	if(m == NULL) 
+		return -1;
+	unmap(m);
 	return 0;
 }
  
