@@ -52,20 +52,13 @@ page_for_addr (const void *address)
 
       /* No page.  Expand stack? */
 
-	/************************************************************
-			   THIS IS ALL PSUEDO CODE 
-	*************************************************************/
-
-/* add code */
-/*
-      struct cur = thread_current;
-      if (address >= cur->pages - 32 && address  >= base - stack_max)
-      {
-	 return page_allocate (void *vaddr, bool read_only);
-      
-    */ 
-	//ends here TW
-      return page_allocate(address, false);
+	/* add code */
+       
+      if(address > PHYS_BASE - STACK_MAX)
+        {
+	  if(address >= thread_current()->user_esp - 32)
+            return page_allocate(address, false);
+        }
 
      }
   return NULL;
@@ -158,17 +151,17 @@ page_out (struct page *p)
      dirty bit, to prevent a race with the process dirtying the
      page. */
 
-	/************************************************************
-	THIS IS ALL PSUEDO CODE AND I AM NOT 100% SURE ABOUT ANYTHING
-	*************************************************************/
-
 /* add code here */
 	//pagedir_clear_page (uint32_t *pd, void *page);
+  pagedir_clear_page(thread_current()->pagedir, p->addr);
+
   /* Has the frame been modified? */
 	//pagedir_is_dirty (uint32_t *pd, const void *vpage) 
+  
 /* add code here */
-/*
-	if (file != NULL)
+  dirty = pagedir_is_dirty(thread_current()->pagedir, p->addr);
+
+/* if (file != NULL)
 	{	
 	   if (dirty == true)
 	      {
@@ -187,11 +180,28 @@ page_out (struct page *p)
 	{
 	   swap_out(p);	
 	}
-	}// end file if statement -- ends here TW
-*/
+	}// end file if statement -- ends here TW */
   /* Write frame contents to disk if necessary. */
 
 /* add code here */
+
+if(p->file != NULL)
+{
+  if(dirty)
+    {
+      if(p->private)
+        ok = swap_out(p);
+      else
+	ok = file_write_at(p->file, p->frame->base, p->file_bytes, p->file_offset) == p->file_bytes;
+    }
+  else
+    ok = true;
+}
+else
+  ok = swap_out(p);
+
+if(ok)
+ p->frame = NULL;
 
   return ok;
 }
