@@ -152,11 +152,9 @@ page_out (struct page *p)
      page. */
 
 /* add code here */
-	//pagedir_clear_page (uint32_t *pd, void *page);
   pagedir_clear_page(thread_current()->pagedir, p->addr);
 
   /* Has the frame been modified? */
-	//pagedir_is_dirty (uint32_t *pd, const void *vpage) 
   
 /* add code here */
   dirty = pagedir_is_dirty(thread_current()->pagedir, p->addr);
@@ -185,23 +183,23 @@ page_out (struct page *p)
 
 /* add code here */
 
-if(p->file != NULL)
-{
-  if(dirty)
+  if(p->file != NULL)
     {
-      if(p->private)
-        ok = swap_out(p);
+      if(dirty)
+        {
+          if(p->private)
+            ok = swap_out(p);
+          else
+	    ok = file_write_at(p->file, p->frame->base, p->file_bytes, p->file_offset) == p->file_bytes;
+        }
       else
-	ok = file_write_at(p->file, p->frame->base, p->file_bytes, p->file_offset) == p->file_bytes;
+        ok = true;
     }
   else
-    ok = true;
-}
-else
-  ok = swap_out(p);
+    ok = swap_out(p);
 
-if(ok)
- p->frame = NULL;
+  if(ok)
+    p->frame = NULL;
 
   return ok;
 }

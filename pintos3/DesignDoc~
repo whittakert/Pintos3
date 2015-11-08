@@ -81,8 +81,6 @@ Ethan Koch
 >> if any, that contains the data of a given page.
 
 
-  This might have been done in the starter code? need to look into deeper
-
 ---- SYNCHRONIZATION ----
 
 >> A2: When two user processes both need a new frame at the same time,
@@ -102,13 +100,6 @@ Ethan Koch
 >> B1: When a frame is required but none is free, some frame must be
 >> evicted.  Describe your code for choosing a frame to evict.
 
-	The frame is first checked for a valid file. If there is no valid file,
-	simply swap the frame. If there is a valid file, check the dirty bit to
-	see if there is data to write to the disk. If there is data, meaning
-	that the file is 'dirty' then check if the frame is private. If it is,
-	then write to the disk, but if it is not, then write to the file. If 
-	the frame was successfully swapped or written to the file, then it was
-	reset to NULL for reuse.
 
 >> B2: Explain your heuristic for deciding whether a page fault for an
 >> invalid virtual address should cause the stack to be extended into
