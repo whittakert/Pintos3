@@ -504,7 +504,27 @@ lookup_mapping (int handle)
 static void
 unmap (struct mapping *m) 
 {
-/* add code here */
+	/* add code here */
+	uint8_t* addr = m->base;
+
+  lock_acquire( &fs_lock );
+	file_seek( m->file, (off_t)0 );
+	file_write( m->file, addr, m->page_cnt * PGSIZE );
+	list_remove( &m->elem );
+  lock_release( &fs_lock );
+
+	while( m->page_cnt > 0 )
+		{	
+		page_deallocate( addr );
+		addr += PGSIZE;
+		m->page_cnt--;
+		}
+
+  //lock_acquire( &fs_lock );
+  //file_close( m->file );
+  //lock_release( &fs_lock );
+
+	//free(m);
 }
  
 /* Mmap system call. */
@@ -560,9 +580,9 @@ sys_mmap (int handle, void *addr)
 static int
 sys_munmap (int mapping) 
 {
-/* add code here */
-
-  return 0;
+	/* add code here */
+	unmap(lookup_mapping(mapping));
+	return 0;
 }
  
 /* On thread exit, close all open files and unmap all mappings. */
