@@ -8,9 +8,9 @@
 
 >> Fill in the names and email addresses of your group members.
 
-Taylor Whittaker <whittakert@ksu.edu>
-Doug Anjard
-Ethan Koch
+Taylor Whittaker 	whittakert@ksu.edu
+Doug Anjard		danjard@ksu.edu
+Ethan Koch		ethank@ksu.edu
 
 ---- PRELIMINARIES ----
 
@@ -24,6 +24,9 @@ Ethan Koch
 	*** We used the pintos3 code provided for us ***
 	--> We will document here and in our code where we implement our own code
 	and what is provided for us. 
+	
+	--> Also used the standford write ups 
+	https://web.stanford.edu/class/cs140/projects/pintos/pintos_4.html
 	
 			PAGE TABLE MANAGEMENT
 			=====================
@@ -74,12 +77,14 @@ Ethan Koch
 	  };
 
 
-
 ---- ALGORITHMS ----
 
 >> A1: In a few paragraphs, describe your code for locating the frame,
 >> if any, that contains the data of a given page.
-
+	
+	--> This is done in try_frame_alloc_and_lock (struct page *page) 
+	for us. When this function is called, it will first try to find a free frame
+	to use. If we are unable to find a free frame, we then find a frame to evict. 
 
 ---- SYNCHRONIZATION ----
 
@@ -100,10 +105,26 @@ Ethan Koch
 >> B1: When a frame is required but none is free, some frame must be
 >> evicted.  Describe your code for choosing a frame to evict.
 
+	The frame is first checked for a valid file. If there is no valid file,
+	simply swap the frame. If there is a valid file, check the dirty bit to
+	see if there is data to write to the disk. If there is data, meaning
+	that the file is 'dirty' then check if the frame is private. If it is,
+	then write to the disk, but if it is not, then write to the file. If 
+	the frame was successfully swapped or written to the file, then it was
+	reset to NULL for reuse.
 
 >> B2: Explain your heuristic for deciding whether a page fault for an
 >> invalid virtual address should cause the stack to be extended into
 >> the page that faulted.
+
+	--> In our page_for_addr (const void *address) we first check to make
+	sure that the address is less than the amount of memory needed for the
+	stack. If so, we go ahead and try to find an exisiting page. If we are 
+	unable to find one, we then verify that the address is greater than
+	size of memory - stack max. If true, this means that our address is out
+	side of our working range. We then check to see if our address is greater
+	than or equal to the current thread stack pointer - 32. If so, we
+	know we need to allocate a new page. 
 
 			 MEMORY MAPPED FILES
 			 ===================
@@ -134,8 +155,23 @@ Ethan Koch
 >> memory subsystem.  Explain how the page fault and eviction
 >> processes differ between swap pages and other pages.
 
+	--> With the mapping structure we are able to integrate our files 
+	into memory. Within the structure, we have a pointer to the file, the 
+	"base" or where we start memory mapping and also a count for how many
+	pages we map.
+	
+
 >> C3: Explain how you determine whether a new file mapping overlaps
 >> any existing segment.
+
+	--> In page_allocate (void *vaddr, bool read_only) we add a mapping
+	for our virtual address to the page has table and returns
+	a pointer to that page. We search to make sure that the table already
+	contains that page. If it doesn't, hash_insert will insert the page 
+	into the table and return a null pointer. If the address is already 
+	in the table then it returns without modifying the table. This
+	pointer allows us to know if we are overlaping.
+	
 
 ---- RATIONALE ----
 
